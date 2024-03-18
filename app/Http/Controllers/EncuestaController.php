@@ -78,18 +78,10 @@ public function listarEncuesta()
                     ->where('user_id', $userId)
                     ->get();
 
-
-    
-    
     $formattedEncuestas = $encuesta->map(function ($encuesta) {
         $enfermedades = $encuesta->enfermedades->pluck('nombre')->toArray();
 
-
-        if (empty($enfermedades)) {
-            $enfermedadesTexto = '"No posees enfermedades"';
-        } else {
-            $enfermedadesTexto = $enfermedades;
-        }
+        $enfermedadesTexto = empty($enfermedades) ? 'No posees enfermedades' : $enfermedades;
 
         return [
             'id' => $encuesta->id,
@@ -99,11 +91,12 @@ public function listarEncuesta()
             'peso' => $encuesta->peso,
             'genero' => $encuesta->genero,
             'estatura' => $encuesta->estatura,
-            'enfermedades' => $enfermedades,
+            'enfermedades' => $enfermedadesTexto,
         ];
     });
     return response()->json($formattedEncuestas, 200);
 }
+
 
 
   
