@@ -87,6 +87,9 @@ public function listarEncuesta()
             'id' => $encuesta->id,
             'actividad_id' => $encuesta->actividad->nivel,
             'user_id' => $encuesta->user->name,
+
+
+            
             'edad' => $encuesta->edad,
             'peso' => $encuesta->peso,
             'genero' => $encuesta->genero,
