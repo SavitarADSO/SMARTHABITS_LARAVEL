@@ -77,10 +77,19 @@ public function listarEncuesta()
     $encuesta = Encuesta::with(['actividad', 'user', 'enfermedades'])
                     ->where('user_id', $userId)
                     ->get();
+
+
     
     
     $formattedEncuestas = $encuesta->map(function ($encuesta) {
         $enfermedades = $encuesta->enfermedades->pluck('nombre')->toArray();
+
+
+        if (empty($enfermedades)) {
+            $enfermedadesTexto = '"No posees enfermedades"';
+        } else {
+            $enfermedadesTexto = $enfermedades;
+        }
 
         return [
             'id' => $encuesta->id,
