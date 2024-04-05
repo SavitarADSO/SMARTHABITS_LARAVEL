@@ -81,7 +81,7 @@ public function listarEncuesta()
     $formattedEncuestas = $encuesta->map(function ($encuesta) {
         $enfermedades = $encuesta->enfermedades->pluck('nombre')->toArray();
 
-        $enfermedadesTexto = empty($enfermedades) ? 'No posees enfermedades' : $enfermedades;
+        //$enfermedadesTexto = empty($enfermedades) ? 'No posees enfermedades' : $enfermedades;
 
         return [
             'id' => $encuesta->id,
@@ -95,6 +95,7 @@ public function listarEncuesta()
         ];
     });
     return response()->json($formattedEncuestas, 200);
+
 }
 
 
