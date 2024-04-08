@@ -12,6 +12,7 @@ use App\Models\Enfermedad;
 use App\Models\Encuesta;
 use App\Models\Caloria;
 use App\Models\User;
+use App\Models\CaloriaHasDieta;
 
 
 
@@ -81,7 +82,7 @@ public function listarEncuesta()
     $formattedEncuestas = $encuesta->map(function ($encuesta) {
         $enfermedades = $encuesta->enfermedades->pluck('nombre')->toArray();
 
-        //$enfermedadesTexto = empty($enfermedades) ? 'No posees enfermedades' : $enfermedades;
+        $enfermedadesTexto = $enfermedades;
 
         return [
             'id' => $encuesta->id,
@@ -128,9 +129,9 @@ public function listarEncuesta()
         $estatura = $request->estatura;
 
         if ($genero == 'Hombre' || $genero == 'hombre') {
-            $caloriasMantenimiento = 88 + (13 * $peso) + (5 * $estatura) - (6 * $edad);
+            $caloriasMantenimiento = 88 + (15 * $peso) + (7 * $estatura) - (8 * $edad);
         } else if ($genero == 'Mujer' || $genero == 'mujer') {
-            $caloriasMantenimiento = 447 + (9 * $peso) + (3 * $estatura) - (5 * $edad);
+            $caloriasMantenimiento = 447 + (11 * $peso) + (5 * $estatura) - (7 * $edad);
         }
 
         // Calcular las calorías para volumen, definición y recomposición
@@ -170,6 +171,9 @@ public function listarEncuesta()
         $encuesta->genero = $request->genero;
         $encuesta->estatura = $request->estatura;
         $encuesta->save();
+
+
+        $encuesta->enfermedades()->detach();
 
         // Asociar las enfermedades a la encuesta en la tabla pivote
         if ($request->has('enfermedades')) {
