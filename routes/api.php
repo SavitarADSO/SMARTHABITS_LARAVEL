@@ -34,6 +34,7 @@ Route::group([
     'namespace' => 'App\Http\Controllers',
 ], function () {
     Route::post('login', 'AuthController@login');
+    Route::post('login/administrador', 'AuthController@loginAdministrador');
     Route::post('signup/{role?}', 'AuthController@signUp');
   
     Route::middleware('auth:api')->group(function() {
