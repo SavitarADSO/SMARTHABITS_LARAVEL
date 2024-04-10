@@ -42,26 +42,37 @@ class CaloriaHasDietaController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'caloria_id' => 'required|exists:calorias,id',
-            'dieta_id' => 'required|exists:dietas,id',
-        ]);
-    
-        $caloriaHasDieta = new CaloriaHasDieta();
-        $caloriaHasDieta->caloria_id = $request->caloria_id;
-        $caloriaHasDieta->dieta_id = $request->dieta_id;
-        $caloriaHasDieta->save();
-    
-        // Obtener el usuario asociado a la caloria
-        $caloria = Caloria::find($request->caloria_id);
-        $usuario = $caloria->user;
-    
-        // Enviar el correo electrónico
-        Mail::to($usuario->email)->send(new DietaCreada());
-    
-        return response()->json($usuario->email, 201);
+{
+    $request->validate([
+        'caloria_id' => 'required|exists:calorias,id',
+        'dieta_id' => 'required|exists:dietas,id',
+    ]);
+
+    // Verificar si la relación ya existe
+    $existingRelation = CaloriaHasDieta::where('caloria_id', $request->caloria_id)
+                                        ->where('dieta_id', $request->dieta_id)
+                                        ->exists();
+
+    if ($existingRelation) {
+        return response()->json(['error' => 'Esta relación ya existe.'], 422);
     }
+
+    // Si la relación no existe, crearla
+    $caloriaHasDieta = new CaloriaHasDieta();
+    $caloriaHasDieta->caloria_id = $request->caloria_id;
+    $caloriaHasDieta->dieta_id = $request->dieta_id;
+    $caloriaHasDieta->save();
+
+    // Obtener el usuario asociado a la caloria
+    $caloria = Caloria::find($request->caloria_id);
+    $usuario = $caloria->user;
+
+    // Enviar el correo electrónico
+    Mail::to($usuario->email)->send(new DietaCreada());
+
+    return response()->json($usuario->email, 201);
+}
+
 
     /**
      * Display the specified resource.
